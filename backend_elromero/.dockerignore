@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+venv_elromero/
+*.egg-info/
+
+# Django
+*.log
+db.sqlite3
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/
+*.swp
+
+# Testing
+.pytest_cache/
+
+# Datos locales
+*.png
+*.jpg
+*.jpeg
