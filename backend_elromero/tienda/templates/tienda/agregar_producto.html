@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Producto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .btn-submit {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background: #45a049;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .productos-list {
+            margin-top: 30px;
+        }
+        .productos-list h2 {
+            color: #333;
+        }
+        .producto-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .producto-item h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .producto-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .producto-item .precio {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .producto-item .stock {
+            color: #f39c12;
+        }
+        .producto-item .activo {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .producto-item .inactivo {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .btn-editar {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        .btn-editar:hover {
+            background: #2980b9;
+        }
+        .btn-desactivar {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-desactivar:hover {
+            background: #c0392b;
+        }
+        .btn-activar {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-activar:hover {
+            background: #229954;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>{% if producto_editar %}Editar Producto{% else %}Agregar Nuevo Producto{% endif %}</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="success-message">
+                {% else %}
+                    <div class="error-message">
+                {% endif %}
+                        {{ message }}
+                    </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">{% if producto_editar %}Guardar Cambios{% else %}Agregar Producto{% endif %}</button>
+        </form>
+    </div>
+
+    <div class="productos-list">
+        <h2>Productos Existentes</h2>
+        {% if productos %}
+            {% for producto in productos %}
+                <div class="producto-item">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p>{{ producto.descripcion }}</p>
+                    <p class="precio">Precio: {{ producto.precio }} CUP</p>
+                    <p class="stock">Stock: {{ producto.stock }}</p>
+                    <p>Categoría: {{ producto.categoria.nombre }}</p>
+                    <p>Estado: <span class="{% if producto.activo %}activo{% else %}inactivo{% endif %}">{% if producto.activo %}Activo{% else %}Inactivo{% endif %}</span></p>
+                    <div>
+                        <a href="{% url 'editar_producto' producto.pk %}"><button class="btn-editar">Editar</button></a>
+                        <a href="{% url 'cambiar_estado_producto' producto.pk %}">
+                            {% if producto.activo %}
+                                <button class="btn-desactivar">Desactivar</button>
+                            {% else %}
+                                <button class="btn-activar">Activar</button>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay productos registrados.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

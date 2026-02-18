@@ -1,0 +1,1 @@
+{\n  "routes": [],\n  "env": {\n    "MY_ENV_VAR": "value"\n  },\n  "cors": {\n    "allowOrigins": ["*"],\n    "allowMethods": ["GET", "POST", "PUT", "DELETE"],\n    "allowHeaders": ["Content-Type", "Authorization"]\n  }\n}
