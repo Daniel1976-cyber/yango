@@ -1,1 +1,19 @@
-{\n  "routes": [],\n  "env": {\n    "MY_ENV_VAR": "value"\n  },\n  "cors": {\n    "allowOrigins": ["*"],\n    "allowMethods": ["GET", "POST", "PUT", "DELETE"],\n    "allowHeaders": ["Content-Type", "Authorization"]\n  }\n}
+{
+  "routes": [],
+  "env": {
+    "PYTHON_VERSION": "3.11"
+  },
+  "builds": [
+    {
+      "src": "backend_elromero/wsgi.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend_elromero/wsgi.py"
+    }
+  ]
+}
