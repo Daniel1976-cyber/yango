@@ -20,7 +20,8 @@ Esta guía explica cómo deployar la tienda online para que sea accesible desde 
    - **Name**: bazar-el-romero-api
    - **Region**: Frankfurt (o la más cercana a Cuba)
    - **Branch**: main
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Docker Build Context Directory**: `.` (punto = raíz del repositorio)
+   - **Dockerfile Path**: `backend_elromero/Dockerfile`
    - **Start Command**: `gunicorn backend_elromero.wsgi:application`
 5. Haz clic en **Advanced** y agrega variables de entorno:
    - `SECRET_KEY`: Copia tu clave secreta de Django (en `settings.py`)
