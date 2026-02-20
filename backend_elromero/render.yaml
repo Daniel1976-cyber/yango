@@ -2,7 +2,7 @@ services:
   - type: web
     name: yango-api
     env: python
-    region: frankfurt
+    region: oregon
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn backend_elromero.wsgi:application
     envVars:
@@ -19,4 +19,4 @@ services:
 
 databases:
   - name: yango-db
-    region: frankfurt
+    region: oregon
