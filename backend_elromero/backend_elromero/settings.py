@@ -154,3 +154,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Authentication Redirect
+LOGIN_URL = 'admin:login'

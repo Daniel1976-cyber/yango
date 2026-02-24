@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from .forms import ProductoForm
 from .models import Producto
 
+@staff_member_required
 def agregar_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
@@ -21,6 +23,7 @@ def agregar_producto(request):
         'productos': productos
     })
 
+@staff_member_required
 def editar_producto(request, pk):
     producto = Producto.objects.get(pk=pk)
     if request.method == 'POST':
@@ -41,6 +44,7 @@ def editar_producto(request, pk):
         'producto_editar': producto
     })
 
+@staff_member_required
 def cambiar_estado_producto(request, pk):
     producto = Producto.objects.get(pk=pk)
     producto.activo = not producto.activo

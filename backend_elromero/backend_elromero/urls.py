@@ -19,7 +19,7 @@ from django.urls import path, include
 from tienda import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('gerente-elromero/', admin.site.urls),
     path('api/', include('tienda.tienda_urls')),
     path('nuevo-producto', views.agregar_producto, name='agregar_producto'),
     path('editar-producto/<int:pk>', views.editar_producto, name='editar_producto'),
