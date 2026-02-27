@@ -1,13 +1,12 @@
 {
-  "routes": [],
-  "env": {
-    "PYTHON_VERSION": "3.11"
-  },
+  "version": 2,
   "builds": [
     {
       "src": "backend_elromero/wsgi.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
+      "config": {
+        "maxLambdaSize": "15mb"
+      }
     }
   ],
   "routes": [
@@ -15,5 +14,8 @@
       "src": "/(.*)",
       "dest": "backend_elromero/wsgi.py"
     }
-  ]
+  ],
+  "env": {
+    "PYTHON_VERSION": "3.11"
+  }
 }
