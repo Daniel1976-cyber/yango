@@ -16,13 +16,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_elromero.settings')
 
 application = get_wsgi_application()
 
-# Automatic migrations on startup
-try:
-    print("Running automatic migrations...")
-    call_command('migrate', interactive=False)
-    print("Migrations completed successfully.")
-except Exception as e:
-    print(f"Error running migrations: {e}")
+# Automatic migrations on startup (Temporarily disabled for debugging)
+# try:
+#     print("Running automatic migrations...")
+#     call_command('migrate', interactive=False)
+#     print("Migrations completed successfully.")
+# except Exception as e:
+#     print(f"Error running migrations: {e}")
 
 # Add for Vercel
 app = application
