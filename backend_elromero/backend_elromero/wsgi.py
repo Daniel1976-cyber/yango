@@ -15,4 +15,12 @@ from django.core.management import call_command
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_elromero.settings')
 
 application = get_wsgi_application()
+
+# Automatic migrations on startup
+try:
+    print("Running automatic migrations...")
+    call_command('migrate', interactive=False)
+    print("Migrations completed successfully.")
+except Exception as e:
+    print(f"Error running migrations: {e}")
 app = application
