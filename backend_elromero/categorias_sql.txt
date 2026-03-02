@@ -1,0 +1,28 @@
+-- =============================================
+-- Comando SQL para Supabase SQL Editor
+-- =============================================
+
+-- Crear tabla de categorías
+CREATE TABLE IF NOT EXISTS categoria (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT DEFAULT ''
+);
+
+-- Insertar las 8 categorías del proyecto
+INSERT INTO categoria (nombre, descripcion) VALUES
+('Ropa de Mujer', 'Ropa y accesorios para mujer'),
+('Ropa de Hombre', 'Ropa y accesorios para hombre'),
+('Ropa de Niña', 'Ropa para niñas'),
+('Cerámica', 'Productos de cerámica artesanal'),
+('Muñequería', 'Muñecos y manualidades'),
+('Plásticos para el Hogar', 'Utensilios plásticos para el hogar'),
+('Plantas Aromáticas y Medicinales', 'Plantas naturales aromaticas y medicinales'),
+('Plomería PVC', 'Materiales de plomería PVC');
+
+-- Obtener el ID de la categoría "Plantas Aromáticas y Medicinales"
+SELECT id, nombre FROM categoria WHERE nombre = 'Plantas Aromáticas y Medicinales';
+
+-- Insertar el producto Hierba Buena (reemplaza 1 con el categoria_id correcto)
+INSERT INTO producto (nombre, descripcion, precio, stock, imagen, activo, categoria_id)
+VALUES ('Hierba Buena', 'Hierba Buena - Planta aromática y medicinal', 150, 10, '/images/1764979646256-q34xq9.jpeg', true, 7);
