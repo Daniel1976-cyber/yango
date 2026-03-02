@@ -178,7 +178,8 @@
     async function loadCatalogFromServer() {
       try {
         // Fetch directo de Supabase (sin backend)
-        const res = await fetch(`${API_BASE}/productos?active=eq.true`, {
+        // Columnas: activo, categoria_id, stock, fecha_creacion, id, precio, nombre, descripcion, imagen
+        const res = await fetch(`${API_BASE}/productos?activo=eq.true`, {
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': 'Bearer ' + SUPABASE_KEY
@@ -186,7 +187,16 @@
         });
         if (!res.ok) throw new Error('No se pudo obtener catálogo desde Supabase');
         let data = await res.json();
-        catalogo = data || [];
+        // Transformar datos al formato esperado por la tienda
+        catalogo = data.map(p => ({
+          id: p.id,
+          nombre: p.nombre,
+          precio: parseFloat(p.precio) || 0,
+          categoria: p.categoria_id,
+          disponible: p.stock > 0,
+          img: p.imagen,
+          active: p.activo
+        }));
         console.log('Catálogo cargado desde Supabase, elementos:', catalogo.length);
       } catch (e) {
         console.warn('No se pudo conectar al servidor, usando fallback localStorage:', e.message);
