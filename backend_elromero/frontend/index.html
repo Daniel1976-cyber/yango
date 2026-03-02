@@ -146,15 +146,16 @@
 
   <script>
     // Configuración de Supabase (fetch directo sin backend)
-    const SUPABASE_URL = 'https://[TU_PROYECTO].supabase.co';
-    const SUPABASE_KEY = 'TU_API_KEY'; // Ver en Supabase → Settings → API
+    const SUPABASE_URL = 'https://ioybpylficwwdseuubbb.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_5vY4W7t38Q714T6ANLFC9w_WnuJ6AH0';
     
     let API_BASE;
     // Set your production API URL here if it's already deployed
     const PRODUCTION_API_URL = SUPABASE_URL + '/rest/v1'; 
 
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      API_BASE = 'http://127.0.0.1:8000/api';
+      // En local también usamos Supabase directo
+      API_BASE = SUPABASE_URL + '/rest/v1';
     } else {
       API_BASE = PRODUCTION_API_URL;
     }
