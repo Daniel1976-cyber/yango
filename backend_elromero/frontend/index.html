@@ -172,11 +172,12 @@
 
     async function loadCatalogFromServer() {
       try {
-        const res = await fetch(`${API_BASE}/productos/`);
+        // Usar API de Supabase
+        const res = await fetch(`${API_BASE}/supabase/productos/`);
         if (!res.ok) throw new Error('No se pudo obtener catálogo desde servidor');
-        let productos = await res.json();
-        catalogo = productos.filter(p => p.active !== false);
-        console.log('Catálogo cargado, elementos:', catalogo.length);
+        let data = await res.json();
+        catalogo = data.productos ? data.productos.filter(p => p.active !== false) : [];
+        console.log('Catálogo cargado desde Supabase, elementos:', catalogo.length);
       } catch (e) {
         console.warn('No se pudo conectar al servidor, usando fallback localStorage:', e.message);
         const local = JSON.parse(localStorage.getItem('romeroCatalogo') || 'null');

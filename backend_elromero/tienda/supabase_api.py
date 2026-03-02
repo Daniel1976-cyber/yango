@@ -7,7 +7,8 @@ import json
 
 # Función para conectar a Supabase
 def get_supabase_connection():
-    database_url = os.environ.get('DATABASE_URL')
+    # Usar variable específica para Supabase
+    database_url = os.environ.get('SUPABASE_URL') or os.environ.get('DATABASE_URL')
     if not database_url:
         return None
     
