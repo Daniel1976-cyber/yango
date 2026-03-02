@@ -7,14 +7,23 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductoSerializer(serializers.ModelSerializer):
+    categoria_nombre = serializers.ReadOnlyField(source='categoria.nombre')
+
     class Meta:
         model = Producto
-        fields = '__all__'
+        fields = ['id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen', 'fecha_creacion', 'activo', 'categoria', 'categoria_nombre']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        request = self.context.get('request')
         if instance.imagen:
-            representation['imagen'] = f"http://127.0.0.1:8000{instance.imagen.url}"
+            if request:
+                representation['imagen'] = request.build_absolute_uri(instance.imagen.url)
+            else:
+                representation['imagen'] = instance.imagen.url
+        
+        # Add 'img' field for frontend compatibility (matches Supabase explicit table field name)
+        representation['img'] = representation.get('imagen')
         
         # Agregar campo disponible basado en stock y estado activo
         representation['disponible'] = instance.stock > 0 and instance.activo

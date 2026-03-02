@@ -7,6 +7,11 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nombre
 
+    class Meta:
+        db_table = 'categoria'
+        verbose_name = 'Categoría'
+        verbose_name_plural = 'Categorías'
+
 class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=200)
@@ -20,6 +25,11 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
 
+    class Meta:
+        db_table = 'producto'
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
+
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -28,6 +38,11 @@ class Cliente(models.Model):
     
     def __str__(self):
         return self.nombre
+
+    class Meta:
+        db_table = 'cliente'
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
 
 class Pedido(models.Model):
     ESTADOS = [
@@ -45,6 +60,11 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido {self.id} - {self.cliente.nombre}"
 
+    class Meta:
+        db_table = 'pedido'
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -53,4 +73,9 @@ class DetallePedido(models.Model):
     
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"
+
+    class Meta:
+        db_table = 'detalle_pedido'
+        verbose_name = 'Detalle de Pedido'
+        verbose_name_plural = 'Detalles de Pedido'
 # Create your models here.
