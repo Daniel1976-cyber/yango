@@ -145,9 +145,13 @@
   </footer>
 
   <script>
+    // Configuración de Supabase (fetch directo sin backend)
+    const SUPABASE_URL = 'https://[TU_PROYECTO].supabase.co';
+    const SUPABASE_KEY = 'TU_API_KEY'; // Ver en Supabase → Settings → API
+    
     let API_BASE;
     // Set your production API URL here if it's already deployed
-    const PRODUCTION_API_URL = 'https://yango-backend.onrender.com/api'; 
+    const PRODUCTION_API_URL = SUPABASE_URL + '/rest/v1'; 
 
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       API_BASE = 'http://127.0.0.1:8000/api';
@@ -172,11 +176,16 @@
 
     async function loadCatalogFromServer() {
       try {
-        // Usar API de Supabase
-        const res = await fetch(`${API_BASE}/supabase/productos/`);
-        if (!res.ok) throw new Error('No se pudo obtener catálogo desde servidor');
+        // Fetch directo de Supabase (sin backend)
+        const res = await fetch(`${API_BASE}/productos?active=eq.true`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          }
+        });
+        if (!res.ok) throw new Error('No se pudo obtener catálogo desde Supabase');
         let data = await res.json();
-        catalogo = data.productos ? data.productos.filter(p => p.active !== false) : [];
+        catalogo = data || [];
         console.log('Catálogo cargado desde Supabase, elementos:', catalogo.length);
       } catch (e) {
         console.warn('No se pudo conectar al servidor, usando fallback localStorage:', e.message);
