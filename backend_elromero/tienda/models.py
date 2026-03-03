@@ -13,14 +13,18 @@ class Categoria(models.Model):
         verbose_name_plural = 'Categorías'
 
 class Producto(models.Model):
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    # Usar CharField para categoría para que coincida con el esquema simple de Supabase
+    categoria = models.CharField(max_length=100, blank=True, null=True)
     nombre = models.CharField(max_length=200)
-    descripcion = models.TextField()
+    descripcion = models.TextField(blank=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField()
-    imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
+    # stock se mapea a disponible en el frontend
+    stock = models.IntegerField(default=1) 
+    # imagen se mapea a img en Supabase
+    imagen = models.CharField(max_length=500, blank=True, null=True, db_column='img')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    activo = models.BooleanField(default=True)
+    # activo se mapea a active en Supabase
+    activo = models.BooleanField(default=True, db_column='active')
     
     def __str__(self):
         return self.nombre
@@ -29,6 +33,7 @@ class Producto(models.Model):
         db_table = 'producto'
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
+        managed = False # Evitar que Django intente crear migraciones para esta tabla
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
