@@ -2,7 +2,9 @@ import os
 import psycopg2
 
 def check_supabase():
-    db_url = "postgresql://postgres:MjpxIruvcgM7QKRP@db.ioybpylficwwdseuubbb.supabase.co:5432/postgres"
+    # Usar IPv6 directa si el nombre de host falla
+    host = "2600:1f13:838:6e17:187d:e4b5:7e7a:e4af"
+    db_url = f"postgresql://postgres:MjpxIruvcgM7QKRP@[{host}]:5432/postgres"
     print(f"Connecting to: {db_url.split('@')[1]}")
     try:
         conn = psycopg2.connect(db_url)
