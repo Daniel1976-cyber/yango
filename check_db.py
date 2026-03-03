@@ -10,17 +10,13 @@ def check_supabase():
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
         
-        print("\n--- Tables in public schema ---")
-        cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
-        tables = cur.fetchall()
-        for table in tables:
-            print(f"Table: {table[0]}")
-            
-        for table in tables:
-            t_name = table[0]
-            print(f"\n--- Columns in {t_name} ---")
-            cur.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{t_name}'")
-            cols = cur.fetchall()
+        # Comprobar específicamente la tabla 'producto'
+        print("\n--- Checking 'producto' table ---")
+        cur.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'producto'")
+        cols = cur.fetchall()
+        if not cols:
+            print("Table 'producto' NOT found!")
+        else:
             for col in cols:
                 print(f"  {col[0]} ({col[1]})")
                 
