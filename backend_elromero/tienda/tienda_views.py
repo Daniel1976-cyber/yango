@@ -19,9 +19,9 @@ class ProductoViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = Producto.objects.filter(activo=True)
-        categoria_id = self.request.query_params.get('categoria', None)
-        if categoria_id:
-            queryset = queryset.filter(categoria_id=categoria_id)
+        categoria = self.request.query_params.get('categoria', None)
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
         return queryset
 
 class ClienteViewSet(viewsets.ModelViewSet):

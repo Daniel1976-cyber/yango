@@ -11,6 +11,7 @@ class Categoria(models.Model):
         db_table = 'categoria'
         verbose_name = 'Categoría'
         verbose_name_plural = 'Categorías'
+        managed = False
 
 class Producto(models.Model):
     # Usar CharField para categoría para que coincida con el esquema simple de Supabase
@@ -48,6 +49,7 @@ class Cliente(models.Model):
         db_table = 'cliente'
         verbose_name = 'Cliente'
         verbose_name_plural = 'Clientes'
+        managed = False
 
 class Pedido(models.Model):
     ESTADOS = [
@@ -69,6 +71,7 @@ class Pedido(models.Model):
         db_table = 'pedido'
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
+        managed = False
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
@@ -83,4 +86,5 @@ class DetallePedido(models.Model):
         db_table = 'detalle_pedido'
         verbose_name = 'Detalle de Pedido'
         verbose_name_plural = 'Detalles de Pedido'
+        managed = False
 # Create your models here.
