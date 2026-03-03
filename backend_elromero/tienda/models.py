@@ -26,7 +26,7 @@ class Producto(models.Model):
         return self.nombre
 
     class Meta:
-        db_table = 'producto'
+        db_table = 'productos'
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
 
