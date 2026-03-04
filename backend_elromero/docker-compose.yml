@@ -24,7 +24,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/elromero
       - DEBUG=1
-      - SECRET_KEY=django-insecure-tu-clave-secreta-aqui
+      - SECRET_KEY=DZxOwSm4x2fxa8Iy
     depends_on:
       - db
 

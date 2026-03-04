@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-%w!lhn_uq*x)r_iyp1@xy(q415exu3e#tjl=po!x6jqux$o4cl')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-replace-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
@@ -102,7 +102,7 @@ if os.environ.get('DATABASE_URL'):
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
             conn_health_checks=True,
-            ssl_require=True
+            ssl_require=False
         )
     }
 else:

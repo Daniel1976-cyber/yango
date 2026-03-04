@@ -7,7 +7,7 @@ services:
     startCommand: gunicorn backend_elromero.wsgi:application
     envVars:
       - key: SECRET_KEY
-        value: django-insecure-%w!lhn_uq*x)r_iyp1@xy(q415exu3e#tjl=po!x6jqux$o4cl
+        value: DZxOwSm4x2fxa8Iy
       - key: DEBUG
         value: False
       - key: ALLOWED_HOSTS
