@@ -10,443 +10,185 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- DOMPurify para sanitizar HTML y prevenir XSS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-  <style>
-    :root {
-      --verde: #3a6b4a;
-      --crema: #f5f1e8;
-      --tierra: #8c5e46;
-      --hoja: #5a8a3a;
-      --texto: #2e2e2e
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif
-    }
-
-    body {
-      background: var(--crema);
-      color: var(--texto);
-      padding-bottom: 4rem
-    }
-
-    header {
-      background: var(--verde);
-      color: #fff;
-      padding: 1.5rem;
-      text-align: center
-    }
-
-    header h1 {
-      font-size: 2rem;
-      margin-bottom: .5rem
-    }
-
-    header p {
-      font-size: 1.1rem;
-      opacity: .9
-    }
-
-    #filtros {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: .5rem;
-      padding: 1rem
-    }
-
-    .btn-filtro {
-      background: var(--hoja);
-      border: none;
-      padding: .6rem 1rem;
-      border-radius: 25px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: .3s
-    }
-
-    .btn-filtro:hover {
-      background: var(--tierra)
-    }
-
-    .activo {
-      background: var(--verde)
-    }
-
-    #productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem
-    }
-
-    .tarjeta {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column
-    }
-
-    .tarjeta img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover
-    }
-
-    .info {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1
-    }
-
-    .info h3 {
-      margin-bottom: .5rem;
-      color: var(--verde)
-    }
-
-    .precio {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: var(--tierra);
-      margin-top: auto
-    }
-
-    .disponible {
-      background: #10b981;
-      color: #fff;
-      padding: .2rem .6rem;
-      border-radius: 12px;
-      font-size: .8rem;
-      align-self: flex-start
-    }
-
-    .agotado {
-      background: #ef4444;
-      color: #fff;
-      padding: .2rem .6rem;
-      border-radius: 12px;
-      font-size: .8rem;
-      align-self: flex-start
-    }
-
-    #carritoFlotante {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      background: var(--verde);
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 50px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-weight: bold;
-      z-index: 998
-    }
-
-    #modalFondo {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .6);
-      z-index: 999;
-      display: none;
-      align-items: center;
-      justify-content: center
-    }
-
-    #modal {
-      background: var(--crema);
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      padding: 1.5rem;
-      max-height: 80vh;
-      overflow-y: auto
-    }
-
-    #modal h3 {
-      margin-bottom: 1rem;
-      color: var(--verde)
-    }
-
-    #listaCarrito {
-      margin-bottom: 1rem
-    }
-
-    .itemCarrito {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: .5rem 0;
-      border-bottom: 1px solid var(--tierra)
-    }
-
-    .total {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--tierra);
-      margin-top: 1rem;
-      text-align: right
-    }
-
-    .botones {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem
-    }
-
-    .botones button {
-      flex: 1;
-      padding: .75rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer
-    }
-
-    .btn-wsp {
-      background: #25D366 !important;
-      color: white !important;
-      border: none !important;
-      padding: .75rem !important;
-      border-radius: 8px !important;
-      font-weight: bold !important;
-      cursor: pointer !important;
-      transition: background-color 0.3s ease !important;
-    }
-
-    .btn-wsp:hover {
-      background: #128C7E !important;
-    }
-
-    .btn-cancel {
-      background: #ccc;
-      color: #fff;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background: var(--tierra);
-      color: #fff;
-      margin-top: 2rem
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 
 <body>
   <!-- HEADER FIJO -->
-  <header id="mainHeader" style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-image: linear-gradient(to bottom, rgba(58, 107, 74, 0.9), rgba(10, 105, 42, 0.9));
-  background-size: cover;
-  background-position: center;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  padding: 0 2rem;
-  color: white;
-  z-index: 1000;
-  transition: box-shadow 0.3s;
-">
-    <img src="{% static 'imagenes/logofrank.jpg' %}" alt="Logo Bazar El Romero"
-      style="width: 120px; height: auto; border-radius: 4px; margin-right: 1rem;">
+  <header id="mainHeader">
+    <img src="{% static 'imagenes/logofrank.jpg' %}" alt="Logo Bazar El Romero">
     <div>
-      <h1 style="margin: 0; font-size: 1.8em;">Bazar El Romero</h1>
-      <p style="margin: 0; font-size: 1em; opacity: 0.9;">Ropa, hogar, plantas y más · Villa Clara</p>
+      <h1>Bazar El Romero</h1>
+      <p>Ropa, hogar, plantas y más · Villa Clara</p>
     </div>
   </header>
 
-  <section style="text-align:center;padding:2rem;background:var(--crema); margin-top: 160px;">
-    <p style="margin-top:1rem;font-style:italic;color:var(--tierra)">
-      “Calidad y cariño en cada detalle.”
-    </p>
-  </section>
+  <main id="main-content" style="margin-top: 160px;">
+    <section style="text-align:center;padding:2rem;background:var(--crema);">
+      <p style="margin-top:1rem;font-style:italic;color:var(--tierra)">
+        “Calidad y cariño en cada detalle.”
+      </p>
+    </section>
 
-  <!-- MENÚ FIJO DE CATEGORÍAS -->
-  <div id="filtros" style="
-  position: fixed;
-  top: 160px;
-  left: 0;
-  width: 100%;
-  background: var(--crema);
-  border-bottom: 1px solid var(--tierra);
-  z-index: 999;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1rem;
-  transition: box-shadow 0.3s;
-">
-    <button class="btn-filtro activo" onclick="filtrar('todos', event)">Todos</button>
-    <button class="btn-filtro" onclick="filtrar('Ropa de Mujer', event)">Ropa de Mujer</button>
-    <button class="btn-filtro" onclick="filtrar('Ropa de Hombre', event)">Ropa de Hombre</button>
-    <button class="btn-filtro" onclick="filtrar('Ropa de Niña', event)">Ropa de Niña</button>
-    <button class="btn-filtro" onclick="filtrar('Cerámica', event)">Cerámica</button>
-    <button class="btn-filtro" onclick="filtrar('Muñequería', event)">Muñequería</button>
-    <button class="btn-filtro" onclick="filtrar('Plásticos para el Hogar', event)">Plásticos</button>
-    <button class="btn-filtro" onclick="filtrar('Plantas Aromáticas y Medicinales', event)">Plantas</button>
-    <button class="btn-filtro" onclick="filtrar('Plomería PVC', event)">Plomería PVC</button>
-  </div>
+    <!-- MENÚ FIJO DE CATEGORÍAS -->
+    <div id="filtros">
+      <button class="btn-filtro activo" onclick="filtrar('todos', event)">Todos</button>
+      <button class="btn-filtro" onclick="filtrar('Ropa de Mujer', event)">Ropa de Mujer</button>
+      <button class="btn-filtro" onclick="filtrar('Ropa de Hombre', event)">Ropa de Hombre</button>
+      <button class="btn-filtro" onclick="filtrar('Ropa de Niña', event)">Ropa de Niña</button>
+      <button class="btn-filtro" onclick="filtrar('Cerámica', event)">Cerámica</button>
+      <button class="btn-filtro" onclick="filtrar('Muñequería', event)">Muñequería</button>
+      <button class="btn-filtro" onclick="filtrar('Plásticos para el Hogar', event)">Plásticos</button>
+      <button class="btn-filtro" onclick="filtrar('Plantas Aromáticas y Medicinales', event)">Plantas</button>
+      <button class="btn-filtro" onclick="filtrar('Plomería PVC', event)">Plomería PVC</button>
+    </div>
 
-  <section id="productos"></section>
+    <section id="productos"></section>
 
-  <div id="carritoFlotante" onclick="mostrarCarrito()">
-    <span id="carritoIcon">🛒</span>
-    <span id="carritoCant">0</span>
-  </div>
+    <div id="carritoFlotante" onclick="mostrarCarrito()">
+      <span id="carritoIcon">🛒</span>
+      <span id="carritoCant">0</span>
+    </div>
 
-  <div id="modalFondo" onclick="cerrarCarrito(event)">
-    <div id="modal" onclick="event.stopPropagation()">
-      <h3>Tu pedido</h3>
-      <div id="listaCarrito"></div>
-      <div class="total" id="totalCarrito">0.00 CUP</div>
-      <div class="botones">
-        <button class="btn-wsp" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
-        <button class="btn-cancel" onclick="cerrarCarrito()">Cerrar</button>
+    <div id="modalFondo" onclick="cerrarCarrito(event)">
+      <div id="modal" onclick="event.stopPropagation()">
+        <h3>Tu pedido</h3>
+        <div id="listaCarrito"></div>
+        <div class="total" id="totalCarrito">0.00 CUP</div>
+        <div class="botones">
+          <button class="btn-wsp" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+          <button class="btn-cancel" onclick="cerrarCarrito()">Cerrar</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <footer>
-    &copy; 2025 Bazar El Romero – Villa Clara
-  </footer>
+    <footer>
+      &copy; 2025 Bazar El Romero – Villa Clara
+    </footer>
 
-  <script>
-    /* ----------  SCROLL EFFECTS  ---------- */
-    window.addEventListener("scroll", () => {
-      const header = document.getElementById("mainHeader");
-      const filtros = document.getElementById("filtros");
-      if (window.scrollY > 10) {
-        header.style.boxShadow = "0 4px 8px rgba(0,0,0,0.25)";
-        filtros.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-      } else {
-        header.style.boxShadow = "none";
-        filtros.style.boxShadow = "none";
+    <script>
+      /* ----------  SCROLL EFFECTS  ---------- */
+      window.addEventListener("scroll", () => {
+        const header = document.getElementById("mainHeader");
+        const filtros = document.getElementById("filtros");
+        if (window.scrollY > 10) {
+          header.style.boxShadow = "0 4px 8px rgba(0,0,0,0.25)";
+          filtros.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+        } else {
+          header.style.boxShadow = "none";
+          filtros.style.boxShadow = "none";
+        }
+      });
+
+      /* ----------  CONFIG / DATOS INICIALES  ---------- */
+      let API_BASE = '/api'; // Use relative path for production (Same Domain)
+
+      // Fallback for local development if needed
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        API_BASE = 'http://127.0.0.1:8000/api';
       }
-    });
 
-    /* ----------  CONFIG / DATOS INICIALES  ---------- */
-    let API_BASE = '/api'; // Use relative path for production (Same Domain)
+      console.log('API Base:', API_BASE);
+      let catalogo = [];
 
-    // Fallback for local development if needed
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      API_BASE = 'http://127.0.0.1:8000/api';
-    }
-
-    console.log('API Base:', API_BASE);
-    let catalogo = [];
-
-    function escapeHtml(text) {
-      if (typeof text !== 'string') return '';
-      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    async function loadCatalogFromServer() {
-      try {
-        const res = await fetch(`${API_BASE}/productos/`);
-        if (!res.ok) throw new Error('Error al cargar catálogo');
-        let productos = await res.json();
-        catalogo = productos.filter(p => p.activo !== false);
-        console.log('Catálogo cargado:', catalogo.length);
-      } catch (e) {
-        console.warn('Usando respaldo local:', e.message);
-        const local = JSON.parse(localStorage.getItem('romeroCatalogo') || '[]');
-        catalogo = local.filter(p => p.activo !== false);
+      function escapeHtml(text) {
+        if (typeof text !== 'string') return '';
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
       }
-    }
 
-    /* ----------  CARRITO  ---------- */
-    let carrito = [];
-    const carritoCant = document.getElementById('carritoCant');
-    const carritoIcon = document.getElementById('carritoIcon');
+      async function loadCatalogFromServer() {
+        try {
+          const res = await fetch(`${API_BASE}/productos/`);
+          if (!res.ok) throw new Error('Error al cargar catálogo');
+          let productos = await res.json();
+          catalogo = productos.filter(p => p.activo !== false);
+          console.log('Catálogo cargado:', catalogo.length);
+        } catch (e) {
+          console.warn('Usando respaldo local:', e.message);
+          const local = JSON.parse(localStorage.getItem('romeroCatalogo') || '[]');
+          catalogo = local.filter(p => p.activo !== false);
+        }
+      }
 
-    function addCarrito(id) {
-      const prod = catalogo.find(p => p.id === id);
-      if (!prod || !prod.disponible) { alert('No disponible'); return; }
-      const linea = carrito.find(l => l.id === id);
-      if (linea) linea.cant++;
-      else carrito.push({ ...prod, cant: 1 });
-      actualizarCarritoUI();
-      mostrarCarrito();
-    }
+      /* ----------  CARRITO  ---------- */
+      let carrito = [];
+      const carritoCant = document.getElementById('carritoCant');
+      const carritoIcon = document.getElementById('carritoIcon');
 
-    function actualizarCarritoUI() {
-      carritoCant.textContent = carrito.reduce((t, l) => t + l.cant, 0);
-    }
+      function addCarrito(id) {
+        const prod = catalogo.find(p => p.id === id);
+        if (!prod || !prod.disponible) { alert('No disponible'); return; }
+        const linea = carrito.find(l => l.id === id);
+        if (linea) linea.cant++;
+        else carrito.push({ ...prod, cant: 1 });
+        actualizarCarritoUI();
+        mostrarCarrito();
+      }
 
-    function mostrarCarrito() {
-      const lista = document.getElementById('listaCarrito');
-      const totalEl = document.getElementById('totalCarrito');
-      lista.innerHTML = '';
-      if (carrito.length === 0) {
-        lista.innerHTML = '<p>Carrito vacío</p>';
-        totalEl.textContent = '0.00 CUP';
-      } else {
-        let suma = 0;
-        carrito.forEach(l => {
-          const div = document.createElement('div');
-          div.className = 'itemCarrito';
-          div.innerHTML = `
+      function actualizarCarritoUI() {
+        carritoCant.textContent = carrito.reduce((t, l) => t + l.cant, 0);
+      }
+
+      function mostrarCarrito() {
+        const lista = document.getElementById('listaCarrito');
+        const totalEl = document.getElementById('totalCarrito');
+        lista.innerHTML = '';
+        if (carrito.length === 0) {
+          lista.innerHTML = '<p>Carrito vacío</p>';
+          totalEl.textContent = '0.00 CUP';
+        } else {
+          let suma = 0;
+          carrito.forEach(l => {
+            const div = document.createElement('div');
+            div.className = 'itemCarrito';
+            div.innerHTML = `
                     <div><strong>${l.nombre}</strong><br><small>${l.cant} x ${Number(l.precio).toFixed(2)}</small></div>
                     <div>
                         <button onclick="modCant(${l.id}, -1)">-</button>
                         <span>${l.cant}</span>
                         <button onclick="modCant(${l.id}, 1)">+</button>
                     </div>`;
-          lista.appendChild(div);
-          suma += l.cant * l.precio;
-        });
-        totalEl.textContent = suma.toFixed(2) + ' CUP';
+            lista.appendChild(div);
+            suma += l.cant * l.precio;
+          });
+          totalEl.textContent = suma.toFixed(2) + ' CUP';
+        }
+        document.getElementById('modalFondo').style.display = 'flex';
       }
-      document.getElementById('modalFondo').style.display = 'flex';
-    }
 
-    function modCant(id, delta) {
-      const l = carrito.find(x => x.id === id);
-      if (!l) return;
-      l.cant += delta;
-      if (l.cant <= 0) carrito = carrito.filter(x => x.id !== id);
-      actualizarCarritoUI();
-      mostrarCarrito();
-    }
+      function modCant(id, delta) {
+        const l = carrito.find(x => x.id === id);
+        if (!l) return;
+        l.cant += delta;
+        if (l.cant <= 0) carrito = carrito.filter(x => x.id !== id);
+        actualizarCarritoUI();
+        mostrarCarrito();
+      }
 
-    function cerrarCarrito() { document.getElementById('modalFondo').style.display = 'none'; }
+      function cerrarCarrito() { document.getElementById('modalFondo').style.display = 'none'; }
 
-    function enviarWhatsApp() {
-      if (carrito.length === 0) return;
-      const tlf = '5353941233';
-      let txt = 'Hola, pedido:%0A';
-      let total = 0;
-      carrito.forEach(l => {
-        txt += `- ${l.nombre} (${l.cant}x${l.precio})%0A`;
-        total += l.cant * l.precio;
-      });
-      txt += `%0ATotal: ${total.toFixed(2)} CUP`;
-      window.open(`https://wa.me/${tlf}?text=${txt}`, '_blank');
-    }
+      function enviarWhatsApp() {
+        if (carrito.length === 0) return;
+        const tlf = '5353941233';
+        let txt = 'Hola, pedido:%0A';
+        let total = 0;
+        carrito.forEach(l => {
+          txt += `- ${l.nombre} (${l.cant}x${l.precio})%0A`;
+          total += l.cant * l.precio;
+        });
+        txt += `%0ATotal: ${total.toFixed(2)} CUP`;
+        window.open(`https://wa.me/${tlf}?text=${txt}`, '_blank');
+      }
 
-    /* ----------  RENDER  ---------- */
-    const cont = document.getElementById('productos');
-    function renderizar(lista = catalogo) {
-      cont.innerHTML = '';
-      lista.forEach(p => {
-        const t = document.createElement('div');
-        t.className = 'tarjeta';
-        t.innerHTML = `
+      /* ----------  RENDER  ---------- */
+      const cont = document.getElementById('productos');
+      function renderizar(lista = catalogo) {
+        cont.innerHTML = '';
+        lista.forEach(p => {
+          const t = document.createElement('div');
+          t.className = 'tarjeta';
+          t.innerHTML = `
                 <img src="${p.imagen || ''}" alt="${p.nombre}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjFlOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM4YzVlNDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5TaW4gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
                 <div class="info">
                     <h3>${p.nombre}</h3>
@@ -454,19 +196,19 @@
                     <div class="precio">${Number(p.precio).toFixed(2)} CUP</div>
                     <button onclick="addCarrito(${p.id})" style="margin-top:.5rem;padding:.4rem;background:var(--hoja);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Agregar</button>
                 </div>`;
-        cont.appendChild(t);
-      });
-    }
+          cont.appendChild(t);
+        });
+      }
 
-    function filtrar(cat, ev) {
-      document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
-      ev.target.classList.add('activo');
-      const l = cat === 'todos' ? catalogo : catalogo.filter(x => x.categoria_nombre === cat || x.categoria === cat);
-      renderizar(l);
-    }
+      function filtrar(cat, ev) {
+        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+        ev.target.classList.add('activo');
+        const l = cat === 'todos' ? catalogo : catalogo.filter(x => x.categoria_nombre === cat || x.categoria === cat);
+        renderizar(l);
+      }
 
-    loadCatalogFromServer().then(() => renderizar());
-  </script>
+      loadCatalogFromServer().then(() => renderizar());
+    </script>
 </body>
 
 </html>
